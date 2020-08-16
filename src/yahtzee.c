@@ -2,7 +2,16 @@
 
 typedef struct {
     PyObject_HEAD
+    int dice[5];
 } Roll;
+
+static PyObject *Roll_New(PyTypeObject *tp, PyObject *args, PyObject *kwargs) {
+    Roll *new = (Roll *)tp->tp_alloc(tp, 0);
+    for(int i = 0; i < 5; ++i) {
+        new->dice[i] = rand() % 6;
+    }
+    return (PyObject *)new;
+}
 
 static PyTypeObject Roll_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
@@ -10,7 +19,7 @@ static PyTypeObject Roll_Type = {
     .tp_doc = "",
     .tp_basicsize = sizeof(Roll),
     .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_new = PyType_GenericNew,
+    .tp_new = Roll_New,
 };
 
 typedef struct {
@@ -46,6 +55,8 @@ PyMODINIT_FUNC PyInit_yahtzee(void) {
 
     Py_INCREF(&Scorecard_Type);
     PyModule_AddObject(m, "Scorecard", (PyObject *)&Scorecard_Type);
+
+    srand(time(NULL));
 
     return m;
 }
