@@ -1,6 +1,7 @@
 #include <Python.h>
 #include "yahtzee_roll.h"
 
+#define TOP_BONUS(top)  ((top) >= 63 ? 35 : 0)
 
 typedef struct {
     PyObject_HEAD
@@ -36,7 +37,7 @@ static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwar
     return (PyObject *)new;
 }
 
-static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
+static int _top_subtotal(PyObject *self) {
     int result = SCORECARD_VAL(self, ones)
         + SCORECARD_VAL(self, twos)
         + SCORECARD_VAL(self, threes)
@@ -44,7 +45,14 @@ static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
         + SCORECARD_VAL(self, fives)
         + SCORECARD_VAL(self, sixes)
         ;
-    return PyLong_FromLong(result);
+    return result;
+}
+
+static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
+    int subtotal = _top_subtotal(self);
+    int bonus = TOP_BONUS(subtotal);
+    int total = subtotal + bonus;
+    return PyLong_FromLong(total);
 }
 
 static int _score_top(PyObject *roll, uint8_t die_val) {

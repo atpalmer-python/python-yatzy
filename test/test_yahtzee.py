@@ -75,3 +75,14 @@ def test_Scorecard_total():
     assert scorecard.score_as_sixes(yahtzee.Roll(3,2,1,2,3)) == 0
     assert scorecard.total() == 30
 
+
+def test_Scorecard_total_with_bonus():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_ones(yahtzee.Roll(1,1,1,3,3)) == 1 * 3
+    assert scorecard.score_as_twos(yahtzee.Roll(1,1,2,2,2)) == 2 * 3
+    assert scorecard.score_as_threes(yahtzee.Roll(1,3,3,3,6)) == 3 * 3
+    assert scorecard.score_as_fours(yahtzee.Roll(4,5,4,5,4)) == 4 * 3
+    assert scorecard.score_as_fives(yahtzee.Roll(5,5,4,5,6)) == 5 * 3
+    assert scorecard.score_as_sixes(yahtzee.Roll(6,2,6,6,3)) == 6 * 3
+    assert scorecard.total() == 63 + 35
+
