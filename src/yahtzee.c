@@ -6,6 +6,7 @@ typedef struct {
     PyObject_HEAD
     /* sign-bit on for unset */
     int ones;
+    int twos;
 } Scorecard;
 
 #define SCORECARD(self)                 ((Scorecard *)self)
@@ -23,11 +24,13 @@ static PyObject *_ensure_Roll(PyObject *arg) {
 static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwargs) {
     Scorecard *new = (Scorecard *)cls->tp_alloc(cls, 0);
     new->ones = -1;
+    new->twos = -1;
     return (PyObject *)new;
 }
 
 static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
-    int result = SCORECARD_VAL(self, ones);
+    int result = SCORECARD_VAL(self, ones)
+        + SCORECARD_VAL(self, twos);
     return PyLong_FromLong(result);
 }
 
