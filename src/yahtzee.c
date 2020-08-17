@@ -13,6 +13,7 @@ typedef struct {
     int fours;
     int fives;
     int sixes;
+    int three_of_a_kind;
 } Scorecard;
 
 #define SCORECARD(self)                 ((Scorecard *)self)
@@ -29,12 +30,18 @@ static PyObject *_ensure_Roll(PyObject *arg) {
 
 static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwargs) {
     Scorecard *new = (Scorecard *)cls->tp_alloc(cls, 0);
+
+    /* upper section */
     new->ones = -1;
     new->twos = -1;
     new->threes = -1;
     new->fours = -1;
     new->fives = -1;
     new->sixes = -1;
+
+    /* lower section */
+    new->three_of_a_kind = -1;
+
     return (PyObject *)new;
 }
 
@@ -56,6 +63,12 @@ static int _top_total(PyObject *self) {
     return total;
 }
 
+static int _bottom_total(PyObject *self) {
+    int result = SCORECARD_VAL(self, three_of_a_kind)
+        ;
+    return result;
+}
+
 static PyObject *Scorecard_top_subtotal(PyObject *self, PyObject *unused) {
     int subtotal = _top_subtotal(self);
     return PyLong_FromLong(subtotal);
@@ -66,8 +79,13 @@ static PyObject *Scorecard_top_total(PyObject *self, PyObject *unused) {
     return PyLong_FromLong(total);
 }
 
+static PyObject *Scorecard_bottom_total(PyObject *self, PyObject *unused) {
+    int total = _bottom_total(self);
+    return PyLong_FromLong(total);
+}
+
 static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
-    int total = _top_total(self);
+    int total = _top_total(self) + _bottom_total(self);
     return PyLong_FromLong(total);
 }
 
@@ -142,6 +160,7 @@ static PyObject *Scorecard_score_as_sixes(PyObject *self, PyObject *arg) {
 static PyMethodDef scorecard_methods[] = {
     {"top_subtotal", Scorecard_top_subtotal, METH_NOARGS},
     {"top_total", Scorecard_top_total, METH_NOARGS},
+    {"bottom_total", Scorecard_bottom_total, METH_NOARGS},
     {"total", Scorecard_total, METH_NOARGS},
     {"score_as_ones", Scorecard_score_as_ones, METH_O},
     {"score_as_twos", Scorecard_score_as_twos, METH_O},
