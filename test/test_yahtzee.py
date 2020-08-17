@@ -108,3 +108,13 @@ def test_Scorecard_total_with_bonus():
     scorecard = _Scorecard_earned_bonus()
     assert scorecard.total() == 63 + 35
 
+
+def test_Scorecard_three_of_a_kind():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_three_of_a_kind(yahtzee.Roll(6,6,6,2,5)) == 25
+
+
+def test_Scorecard_three_of_a_kind_0():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_three_of_a_kind(yahtzee.Roll(6,6,1,2,3)) == 0
+

@@ -157,6 +157,36 @@ static PyObject *Scorecard_score_as_sixes(PyObject *self, PyObject *arg) {
     return PyLong_FromLong(result);
 }
 
+static void _roll_counts(PyObject *roll, int counts[6]) {
+    for(int i = 0; i < ROLL_NUM_DIE; ++i) {
+        int value = ROLL_DIE_VALUE(roll, i);
+        /* TODO: validate range */
+        ++counts[value - 1];
+    }
+}
+
+static int _counts_of_a_kind(int counts[6], int kind) {
+    int ok_flag = 0;
+    int total = 0;
+    for(int i = 0; i < 6; ++i) {
+        total += (i + 1) * counts[i];
+        if(counts[i] == kind)
+            ok_flag = 1;
+    }
+    return ok_flag ? total : 0;
+}
+
+static PyObject *Scorecard_score_as_three_of_a_kind(PyObject *self, PyObject *arg) {
+    if(!_ensure_Roll(arg))
+        return -1;
+    int counts[6] = {0};
+    _roll_counts(arg, counts);
+    int result = _counts_of_a_kind(counts, 3);
+    if(_apply_score(result, &SCORECARD(self)->three_of_a_kind) < 0)
+        return NULL;
+    return PyLong_FromLong(result);
+}
+
 static PyMethodDef scorecard_methods[] = {
     {"top_subtotal", Scorecard_top_subtotal, METH_NOARGS},
     {"top_total", Scorecard_top_total, METH_NOARGS},
@@ -168,6 +198,7 @@ static PyMethodDef scorecard_methods[] = {
     {"score_as_fours", Scorecard_score_as_fours, METH_O},
     {"score_as_fives", Scorecard_score_as_fives, METH_O},
     {"score_as_sixes", Scorecard_score_as_sixes, METH_O},
+    {"score_as_three_of_a_kind", Scorecard_score_as_three_of_a_kind, METH_O},
     {0},
 };
 
