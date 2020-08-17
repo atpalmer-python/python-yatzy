@@ -14,6 +14,7 @@ typedef struct {
     int fives;
     int sixes;
     int three_of_a_kind;
+    int four_of_a_kind;
 } Scorecard;
 
 #define SCORECARD(self)                 ((Scorecard *)self)
@@ -41,6 +42,7 @@ static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwar
 
     /* lower section */
     new->three_of_a_kind = -1;
+    new->four_of_a_kind = -1;
 
     return (PyObject *)new;
 }
@@ -65,6 +67,7 @@ static int _top_total(PyObject *self) {
 
 static int _bottom_total(PyObject *self) {
     int result = SCORECARD_VAL(self, three_of_a_kind)
+        + SCORECARD_VAL(self, four_of_a_kind)
         ;
     return result;
 }
@@ -187,6 +190,17 @@ static PyObject *Scorecard_score_as_three_of_a_kind(PyObject *self, PyObject *ar
     return PyLong_FromLong(result);
 }
 
+static PyObject *Scorecard_score_as_four_of_a_kind(PyObject *self, PyObject *arg) {
+    if(!_ensure_Roll(arg))
+        return -1;
+    int counts[6] = {0};
+    _roll_counts(arg, counts);
+    int result = _counts_of_a_kind(counts, 4);
+    if(_apply_score(result, &SCORECARD(self)->four_of_a_kind) < 0)
+        return NULL;
+    return PyLong_FromLong(result);
+}
+
 static PyMethodDef scorecard_methods[] = {
     {"top_subtotal", Scorecard_top_subtotal, METH_NOARGS},
     {"top_total", Scorecard_top_total, METH_NOARGS},
@@ -199,6 +213,7 @@ static PyMethodDef scorecard_methods[] = {
     {"score_as_fives", Scorecard_score_as_fives, METH_O},
     {"score_as_sixes", Scorecard_score_as_sixes, METH_O},
     {"score_as_three_of_a_kind", Scorecard_score_as_three_of_a_kind, METH_O},
+    {"score_as_four_of_a_kind", Scorecard_score_as_four_of_a_kind, METH_O},
     {0},
 };
 
