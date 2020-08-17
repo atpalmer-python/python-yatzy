@@ -1,7 +1,8 @@
 #include <Python.h>
 #include "yahtzee_roll.h"
 
-#define TOP_BONUS(top)  ((top) >= 63 ? 35 : 0)
+#define TOP_BONUS(top)      ((top) >= 63 ? 35 : 0)
+#define SLOT_IS_FREE(slot)  ((slot) < 0)
 
 typedef struct {
     PyObject_HEAD
@@ -16,7 +17,7 @@ typedef struct {
 
 #define SCORECARD(self)                 ((Scorecard *)self)
 #define SCORECARD_FIELD(self, f)        (SCORECARD(self)->f)
-#define SCORECARD_HAS_VAL(self, f)      (SCORECARD_FIELD(self, f) >= 0)
+#define SCORECARD_HAS_VAL(self, f)      (!SLOT_IS_FREE(SCORECARD_FIELD(self, f)))
 #define SCORECARD_VAL(self, f)          (SCORECARD_HAS_VAL(self, f) ? SCORECARD_FIELD(self, f) : 0)
 
 static PyObject *_ensure_Roll(PyObject *arg) {
@@ -82,11 +83,19 @@ static int _score_top(PyObject *roll, uint8_t die_val) {
     return result;
 }
 
+static int _apply_score(int score, int *slot) {
+    if(SLOT_IS_FREE(*slot))
+        return *slot = score;
+    PyErr_SetString(PyExc_RuntimeError, "Invalid choice. Slot is already in use");
+    return -1;
+}
+
 static PyObject *Scorecard_score_as_ones(PyObject *self, PyObject *arg) {
     int result = _score_top(arg, 1);
     if(result < 0)
         return NULL;
-    SCORECARD(self)->ones = result;
+    if(_apply_score(result, &SCORECARD(self)->ones) < 0)
+        return NULL;
     return PyLong_FromLong(result);
 }
 

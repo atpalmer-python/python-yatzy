@@ -35,6 +35,13 @@ def test_Scorecard_score_as_ones():
     assert result == 1
 
 
+def test_Scorecard_score_as_ones_reapply():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_ones(yahtzee.Roll(1,2,3,4,5)) == 1
+    with pytest.raises(RuntimeError):
+        assert scorecard.score_as_ones(yahtzee.Roll(1,1,3,4,5)) == 2
+
+
 def test_Scorecard_score_as_twos():
     scorecard = yahtzee.Scorecard()
     result = scorecard.score_as_twos(yahtzee.Roll(1,2,3,4,5))
