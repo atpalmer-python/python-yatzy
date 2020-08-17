@@ -13,6 +13,11 @@ static PyObject *_ensure_Roll(PyObject *arg) {
     return NULL;
 }
 
+static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwargs) {
+    Scorecard *new = (Scorecard *)cls->tp_alloc(cls, 0);
+    return (PyObject *)new;
+}
+
 static PyObject *Scorecard_score_as_ones(PyObject *self, PyObject *arg) {
     if(!_ensure_Roll(arg))
         return NULL;
@@ -36,7 +41,7 @@ static PyTypeObject Scorecard_Type = {
     .tp_doc = "",
     .tp_basicsize = sizeof(Scorecard),
     .tp_flags = Py_TPFLAGS_DEFAULT,
-    .tp_new = PyType_GenericNew,
+    .tp_new = Scorecard_New,
     .tp_methods = scorecard_methods,
 };
 
