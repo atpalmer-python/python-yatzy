@@ -48,10 +48,20 @@ static int _top_subtotal(PyObject *self) {
     return result;
 }
 
-static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
+static int _top_total(PyObject *self) {
     int subtotal = _top_subtotal(self);
     int bonus = TOP_BONUS(subtotal);
     int total = subtotal + bonus;
+    return total;
+}
+
+static PyObject *Scorecard_top_total(PyObject *self, PyObject *unused) {
+    int total = _top_total(self);
+    return PyLong_FromLong(total);
+}
+
+static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
+    int total = _top_total(self);
     return PyLong_FromLong(total);
 }
 
@@ -116,6 +126,7 @@ static PyObject *Scorecard_score_as_sixes(PyObject *self, PyObject *arg) {
 }
 
 static PyMethodDef scorecard_methods[] = {
+    {"top_total", Scorecard_top_total, METH_NOARGS},
     {"total", Scorecard_total, METH_NOARGS},
     {"score_as_ones", Scorecard_score_as_ones, METH_O},
     {"score_as_twos", Scorecard_score_as_twos, METH_O},
