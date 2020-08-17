@@ -4,7 +4,11 @@
 
 typedef struct {
     PyObject_HEAD
+    /* sign-bit on for unset */
+    int ones;
 } Scorecard;
+
+#define SCORECARD(self)     ((Scorecard *)self)
 
 static PyObject *_ensure_Roll(PyObject *arg) {
     if(Roll_CheckExact(arg))
@@ -15,6 +19,7 @@ static PyObject *_ensure_Roll(PyObject *arg) {
 
 static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwargs) {
     Scorecard *new = (Scorecard *)cls->tp_alloc(cls, 0);
+    new->ones = -1;
     return (PyObject *)new;
 }
 
@@ -27,6 +32,7 @@ static PyObject *Scorecard_score_as_ones(PyObject *self, PyObject *arg) {
         if(value == 1)
             result += value;
     }
+    SCORECARD(self)->ones = result;
     return PyLong_FromLong(result);
 }
 
