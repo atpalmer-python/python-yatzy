@@ -41,9 +41,37 @@ def test_Scorecard_score_as_twos():
     assert result == 2
 
 
+def test_Scorecard_score_as_threes():
+    scorecard = yahtzee.Scorecard()
+    result = scorecard.score_as_threes(yahtzee.Roll(1,2,3,4,5))
+    assert result == 3
+
+
+def test_Scorecard_score_as_fours():
+    scorecard = yahtzee.Scorecard()
+    result = scorecard.score_as_fours(yahtzee.Roll(1,2,3,4,5))
+    assert result == 4
+
+
+def test_Scorecard_score_as_fives():
+    scorecard = yahtzee.Scorecard()
+    result = scorecard.score_as_fives(yahtzee.Roll(1,2,3,4,5))
+    assert result == 5
+
+
+def test_Scorecard_score_as_sixes():
+    scorecard = yahtzee.Scorecard()
+    result = scorecard.score_as_sixes(yahtzee.Roll(6,6,6,6,6))
+    assert result == 30
+
+
 def test_Scorecard_total():
     scorecard = yahtzee.Scorecard()
     assert scorecard.score_as_ones(yahtzee.Roll(1,2,3,2,1)) == 2
     assert scorecard.score_as_twos(yahtzee.Roll(1,2,3,2,1)) == 4
-    assert scorecard.total() == 6
+    assert scorecard.score_as_threes(yahtzee.Roll(3,2,1,2,3)) == 6
+    assert scorecard.score_as_fours(yahtzee.Roll(4,5,4,5,6)) == 8
+    assert scorecard.score_as_fives(yahtzee.Roll(4,5,4,5,6)) == 10
+    assert scorecard.score_as_sixes(yahtzee.Roll(3,2,1,2,3)) == 0
+    assert scorecard.total() == 30
 

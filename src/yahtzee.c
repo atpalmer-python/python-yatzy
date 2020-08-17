@@ -75,10 +75,46 @@ static PyObject *Scorecard_score_as_twos(PyObject *self, PyObject *arg) {
     return PyLong_FromLong(result);
 }
 
+static PyObject *Scorecard_score_as_threes(PyObject *self, PyObject *arg) {
+    int result = _score_top(arg, 3);
+    if(result < 0)
+        return NULL;
+    SCORECARD(self)->threes = result;
+    return PyLong_FromLong(result);
+}
+
+static PyObject *Scorecard_score_as_fours(PyObject *self, PyObject *arg) {
+    int result = _score_top(arg, 4);
+    if(result < 0)
+        return NULL;
+    SCORECARD(self)->fours = result;
+    return PyLong_FromLong(result);
+}
+
+static PyObject *Scorecard_score_as_fives(PyObject *self, PyObject *arg) {
+    int result = _score_top(arg, 5);
+    if(result < 0)
+        return NULL;
+    SCORECARD(self)->fives = result;
+    return PyLong_FromLong(result);
+}
+
+static PyObject *Scorecard_score_as_sixes(PyObject *self, PyObject *arg) {
+    int result = _score_top(arg, 6);
+    if(result < 0)
+        return NULL;
+    SCORECARD(self)->sixes = result;
+    return PyLong_FromLong(result);
+}
+
 static PyMethodDef scorecard_methods[] = {
     {"total", Scorecard_total, METH_NOARGS},
     {"score_as_ones", Scorecard_score_as_ones, METH_O},
     {"score_as_twos", Scorecard_score_as_twos, METH_O},
+    {"score_as_threes", Scorecard_score_as_threes, METH_O},
+    {"score_as_fours", Scorecard_score_as_fours, METH_O},
+    {"score_as_fives", Scorecard_score_as_fives, METH_O},
+    {"score_as_sixes", Scorecard_score_as_sixes, METH_O},
     {0},
 };
 
