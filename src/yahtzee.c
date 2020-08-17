@@ -34,22 +34,38 @@ static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
     return PyLong_FromLong(result);
 }
 
-static PyObject *Scorecard_score_as_ones(PyObject *self, PyObject *arg) {
-    if(!_ensure_Roll(arg))
-        return NULL;
+static int _score_top(PyObject *roll, uint8_t die_val) {
+    if(!_ensure_Roll(roll))
+        return -1;
     int result = 0;
     for(int i = 0; i < ROLL_NUM_DIE; ++i) {
-        int value = ROLL_DIE_VALUE(arg, i);
-        if(value == 1)
+        int value = ROLL_DIE_VALUE(roll, i);
+        if(value == die_val)
             result += value;
     }
+    return result;
+}
+
+static PyObject *Scorecard_score_as_ones(PyObject *self, PyObject *arg) {
+    int result = _score_top(arg, 1);
+    if(result < 0)
+        return NULL;
     SCORECARD(self)->ones = result;
+    return PyLong_FromLong(result);
+}
+
+static PyObject *Scorecard_score_as_twos(PyObject *self, PyObject *arg) {
+    int result = _score_top(arg, 2);
+    if(result < 0)
+        return NULL;
+    SCORECARD(self)->twos = result;
     return PyLong_FromLong(result);
 }
 
 static PyMethodDef scorecard_methods[] = {
     {"total", Scorecard_total, METH_NOARGS},
     {"score_as_ones", Scorecard_score_as_ones, METH_O},
+    {"score_as_twos", Scorecard_score_as_twos, METH_O},
     {0},
 };
 

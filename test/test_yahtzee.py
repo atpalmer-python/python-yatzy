@@ -35,8 +35,15 @@ def test_Scorecard_score_as_ones():
     assert result == 1
 
 
+def test_Scorecard_score_as_twos():
+    scorecard = yahtzee.Scorecard()
+    result = scorecard.score_as_twos(yahtzee.Roll(1,2,3,4,5))
+    assert result == 2
+
+
 def test_Scorecard_total():
     scorecard = yahtzee.Scorecard()
-    scorecard.score_as_ones(yahtzee.Roll(1,2,3,2,1))
-    assert scorecard.total() == 2
+    assert scorecard.score_as_ones(yahtzee.Roll(1,2,3,2,1)) == 2
+    assert scorecard.score_as_twos(yahtzee.Roll(1,2,3,2,1)) == 4
+    assert scorecard.total() == 6
 
