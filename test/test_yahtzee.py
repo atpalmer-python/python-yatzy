@@ -34,3 +34,9 @@ def test_Scorecard_score_as_ones():
     result = scorecard.score_as_ones(yahtzee.Roll(1,2,3,4,5))
     assert result == 1
 
+
+def test_Scorecard_total():
+    scorecard = yahtzee.Scorecard()
+    scorecard.score_as_ones(yahtzee.Roll(1,2,3,2,1))
+    assert scorecard.total() == 2
+

@@ -8,7 +8,10 @@ typedef struct {
     int ones;
 } Scorecard;
 
-#define SCORECARD(self)     ((Scorecard *)self)
+#define SCORECARD(self)                 ((Scorecard *)self)
+#define SCORECARD_FIELD(self, f)        (SCORECARD(self)->f)
+#define SCORECARD_HAS_VAL(self, f)      (SCORECARD_FIELD(self, f) >= 0)
+#define SCORECARD_VAL(self, f)          (SCORECARD_HAS_VAL(self, f) ? SCORECARD_FIELD(self, f) : 0)
 
 static PyObject *_ensure_Roll(PyObject *arg) {
     if(Roll_CheckExact(arg))
@@ -21,6 +24,11 @@ static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwar
     Scorecard *new = (Scorecard *)cls->tp_alloc(cls, 0);
     new->ones = -1;
     return (PyObject *)new;
+}
+
+static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
+    int result = SCORECARD_VAL(self, ones);
+    return PyLong_FromLong(result);
 }
 
 static PyObject *Scorecard_score_as_ones(PyObject *self, PyObject *arg) {
@@ -37,6 +45,7 @@ static PyObject *Scorecard_score_as_ones(PyObject *self, PyObject *arg) {
 }
 
 static PyMethodDef scorecard_methods[] = {
+    {"total", Scorecard_total, METH_NOARGS},
     {"score_as_ones", Scorecard_score_as_ones, METH_O},
     {0},
 };
