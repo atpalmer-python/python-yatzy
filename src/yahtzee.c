@@ -7,6 +7,10 @@ typedef struct {
     /* sign-bit on for unset */
     int ones;
     int twos;
+    int threes;
+    int fours;
+    int fives;
+    int sixes;
 } Scorecard;
 
 #define SCORECARD(self)                 ((Scorecard *)self)
@@ -25,12 +29,21 @@ static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwar
     Scorecard *new = (Scorecard *)cls->tp_alloc(cls, 0);
     new->ones = -1;
     new->twos = -1;
+    new->threes = -1;
+    new->fours = -1;
+    new->fives = -1;
+    new->sixes = -1;
     return (PyObject *)new;
 }
 
 static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
     int result = SCORECARD_VAL(self, ones)
-        + SCORECARD_VAL(self, twos);
+        + SCORECARD_VAL(self, twos)
+        + SCORECARD_VAL(self, threes)
+        + SCORECARD_VAL(self, fours)
+        + SCORECARD_VAL(self, fives)
+        + SCORECARD_VAL(self, sixes)
+        ;
     return PyLong_FromLong(result);
 }
 
