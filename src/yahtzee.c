@@ -6,12 +6,38 @@ typedef struct {
     PyObject_HEAD
 } Scorecard;
 
+static PyObject *_ensure_Roll(PyObject *arg) {
+    if(Roll_CheckExact(arg))
+        return arg;
+    PyErr_SetString(PyExc_TypeError, "Argument must be Roll");
+    return NULL;
+}
+
+static PyObject *Scorecard_score_as_ones(PyObject *self, PyObject *arg) {
+    if(!_ensure_Roll(arg))
+        return NULL;
+    int result = 0;
+    for(int i = 0; i < ROLL_NUM_DIE; ++i) {
+        int value = ROLL_DIE_VALUE(arg, i);
+        if(value == 1)
+            result += value;
+    }
+    return PyLong_FromLong(result);
+}
+
+static PyMethodDef scorecard_methods[] = {
+    {"score_as_ones", Scorecard_score_as_ones, METH_O},
+    {0},
+};
+
 static PyTypeObject Scorecard_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "Scorecard",
     .tp_doc = "",
     .tp_basicsize = sizeof(Scorecard),
     .tp_flags = Py_TPFLAGS_DEFAULT,
+    .tp_new = PyType_GenericNew,
+    .tp_methods = scorecard_methods,
 };
 
 static struct PyModuleDef module = {

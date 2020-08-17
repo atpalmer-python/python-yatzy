@@ -28,3 +28,9 @@ def test_Roll_iter():
     for die in iter(yahtzee.Roll.roll()):
         assert die >= 1 and die <= 6
 
+
+def test_Scorecard_score_as_ones():
+    scorecard = yahtzee.Scorecard()
+    result = scorecard.score_as_ones(yahtzee.Roll(1,2,3,4,5))
+    assert result == 1
+
