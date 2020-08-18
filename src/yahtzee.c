@@ -17,6 +17,7 @@ typedef struct {
     int four_of_a_kind;
     int full_house;
     int small_straight;
+    int large_straight;
 } Scorecard;
 
 #define SCORECARD(self)                 ((Scorecard *)self)
@@ -47,6 +48,7 @@ static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwar
     new->four_of_a_kind = -1;
     new->full_house = -1;
     new->small_straight = -1;
+    new->large_straight = -1;
 
     return (PyObject *)new;
 }
@@ -74,6 +76,7 @@ static int _bottom_total(PyObject *self) {
         + SCORECARD_VAL(self, four_of_a_kind)
         + SCORECARD_VAL(self, full_house)
         + SCORECARD_VAL(self, small_straight)
+        + SCORECARD_VAL(self, large_straight)
         ;
     return result;
 }
@@ -255,12 +258,12 @@ static int _straight_len(_Counts counts) {
     int maxlen = 0, len = 0;
     for(int die = 1; die <= 6; ++die) {
         if(!COUNTS_FOR_DIE(counts, die)) {
-            maxlen = (len > maxlen) ? len : maxlen;
             len = 0;
         }
         else {
             ++len;
         }
+        maxlen = (len > maxlen) ? len : maxlen;
     }
     return maxlen;
 }
@@ -271,6 +274,16 @@ static PyObject *Scorecard_score_as_small_straight(PyObject *self, PyObject *arg
         return NULL;
     int result = _straight_len(counts) >= 4 ? 30 : 0;
     if(_apply_score(result, &SCORECARD(self)->small_straight) < 0)
+        return NULL;
+    return PyLong_FromLong(result);
+}
+
+static PyObject *Scorecard_score_as_large_straight(PyObject *self, PyObject *arg) {
+    _Counts counts = COUNTS_INIT;
+    if(!_roll_counts(arg, counts))
+        return NULL;
+    int result = _straight_len(counts) >= 5 ? 40 : 0;
+    if(_apply_score(result, &SCORECARD(self)->large_straight) < 0)
         return NULL;
     return PyLong_FromLong(result);
 }
@@ -290,6 +303,7 @@ static PyMethodDef scorecard_methods[] = {
     {"score_as_four_of_a_kind", Scorecard_score_as_four_of_a_kind, METH_O},
     {"score_as_full_house", Scorecard_score_as_full_house, METH_O},
     {"score_as_small_straight", Scorecard_score_as_small_straight, METH_O},
+    {"score_as_large_straight", Scorecard_score_as_large_straight, METH_O},
     {0},
 };
 

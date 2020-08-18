@@ -153,3 +153,13 @@ def test_Scorecard_small_straight():
     scorecard = yahtzee.Scorecard()
     assert scorecard.score_as_small_straight(yahtzee.Roll(2,4,3,6,1)) == 30
 
+
+def test_Scorecard_small_straight_qualifies_as_large():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_small_straight(yahtzee.Roll(1,2,3,4,5)) == 30
+
+
+def test_Scorecard_large_straight():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_large_straight(yahtzee.Roll(2,4,3,5,6)) == 40
+
