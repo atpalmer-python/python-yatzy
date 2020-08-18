@@ -170,12 +170,20 @@ typedef int _Counts[6];
 #define COUNTS_INIT                 {0}
 #define COUNTS_FOR_DIE(self, die)   ((self)[(die) - 1])
 
-static void _roll_counts(PyObject *roll, _Counts counts) {
+static void *_roll_counts(PyObject *roll, _Counts counts) {
+    if(!_ensure_Roll(roll))
+        return NULL;
     for(int i = 0; i < ROLL_NUM_DIE; ++i) {
         int value = ROLL_DIE_VALUE(roll, i);
-        /* TODO: validate range */
+        if(!ROLL_DIE_VALUE_IS_VALID(value))
+            goto err;
         ++COUNTS_FOR_DIE(counts, value);
     }
+    return counts;
+
+err:
+    PyErr_SetString(PyExc_SystemError, "Roll contained invalid die value");
+    return NULL;
 }
 
 static int _counts_of_a_kind(_Counts counts, int kind) {
@@ -190,10 +198,9 @@ static int _counts_of_a_kind(_Counts counts, int kind) {
 }
 
 static PyObject *Scorecard_score_as_three_of_a_kind(PyObject *self, PyObject *arg) {
-    if(!_ensure_Roll(arg))
-        return -1;
     _Counts counts = COUNTS_INIT;
-    _roll_counts(arg, counts);
+    if(!_roll_counts(arg, counts))
+        return NULL;
     int result = _counts_of_a_kind(counts, 3);
     if(_apply_score(result, &SCORECARD(self)->three_of_a_kind) < 0)
         return NULL;
@@ -201,10 +208,9 @@ static PyObject *Scorecard_score_as_three_of_a_kind(PyObject *self, PyObject *ar
 }
 
 static PyObject *Scorecard_score_as_four_of_a_kind(PyObject *self, PyObject *arg) {
-    if(!_ensure_Roll(arg))
-        return -1;
     _Counts counts = COUNTS_INIT;
-    _roll_counts(arg, counts);
+    if(!_roll_counts(arg, counts))
+        return NULL;
     int result = _counts_of_a_kind(counts, 4);
     if(_apply_score(result, &SCORECARD(self)->four_of_a_kind) < 0)
         return NULL;
