@@ -15,6 +15,7 @@ typedef struct {
     int sixes;
     int three_of_a_kind;
     int four_of_a_kind;
+    int full_house;
 } Scorecard;
 
 #define SCORECARD(self)                 ((Scorecard *)self)
@@ -43,6 +44,7 @@ static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwar
     /* lower section */
     new->three_of_a_kind = -1;
     new->four_of_a_kind = -1;
+    new->full_house = -1;
 
     return (PyObject *)new;
 }
@@ -68,6 +70,7 @@ static int _top_total(PyObject *self) {
 static int _bottom_total(PyObject *self) {
     int result = SCORECARD_VAL(self, three_of_a_kind)
         + SCORECARD_VAL(self, four_of_a_kind)
+        + SCORECARD_VAL(self, full_house)
         ;
     return result;
 }
@@ -186,6 +189,14 @@ err:
     return NULL;
 }
 
+static int _has_kind(_Counts counts, int kind) {
+    for(int die = 1; die <= 6; ++die) {
+        if(COUNTS_FOR_DIE(counts, die) == kind)
+            return 1;
+    }
+    return 0;
+}
+
 static int _counts_of_a_kind(_Counts counts, int kind) {
     int ok_flag = 0;
     int total = 0;
@@ -217,6 +228,18 @@ static PyObject *Scorecard_score_as_four_of_a_kind(PyObject *self, PyObject *arg
     return PyLong_FromLong(result);
 }
 
+static PyObject *Scorecard_score_as_full_house(PyObject *self, PyObject *arg) {
+    _Counts counts = COUNTS_INIT;
+    if(!_roll_counts(arg, counts))
+        return NULL;
+
+    int result = (_has_kind(counts, 3) && _has_kind(counts, 2)) ? 25 : 0;
+
+    if(_apply_score(result, &SCORECARD(self)->full_house) < 0)
+        return NULL;
+    return PyLong_FromLong(result);
+}
+
 static PyMethodDef scorecard_methods[] = {
     {"top_subtotal", Scorecard_top_subtotal, METH_NOARGS},
     {"top_total", Scorecard_top_total, METH_NOARGS},
@@ -230,6 +253,7 @@ static PyMethodDef scorecard_methods[] = {
     {"score_as_sixes", Scorecard_score_as_sixes, METH_O},
     {"score_as_three_of_a_kind", Scorecard_score_as_three_of_a_kind, METH_O},
     {"score_as_four_of_a_kind", Scorecard_score_as_four_of_a_kind, METH_O},
+    {"score_as_full_house", Scorecard_score_as_full_house, METH_O},
     {0},
 };
 

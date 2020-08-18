@@ -128,3 +128,13 @@ def test_Scorecard_four_of_a_kind_0():
     scorecard = yahtzee.Scorecard()
     assert scorecard.score_as_four_of_a_kind(yahtzee.Roll(1,6,2,5,3)) == 0
 
+
+def test_Scorecard_full_house():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_full_house(yahtzee.Roll(5,5,1,1,5)) == 25
+
+
+def test_Scorecard_full_house_0():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_full_house(yahtzee.Roll(1,6,2,5,3)) == 0
+
