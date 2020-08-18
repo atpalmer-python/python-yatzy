@@ -18,6 +18,7 @@ typedef struct {
     int full_house;
     int small_straight;
     int large_straight;
+    int chance;
 } Scorecard;
 
 #define SCORECARD(self)                 ((Scorecard *)self)
@@ -49,6 +50,7 @@ static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwar
     new->full_house = -1;
     new->small_straight = -1;
     new->large_straight = -1;
+    new->chance = -1;
 
     return (PyObject *)new;
 }
@@ -77,6 +79,7 @@ static int _bottom_total(PyObject *self) {
         + SCORECARD_VAL(self, full_house)
         + SCORECARD_VAL(self, small_straight)
         + SCORECARD_VAL(self, large_straight)
+        + SCORECARD_VAL(self, chance)
         ;
     return result;
 }
@@ -288,6 +291,15 @@ static PyObject *Scorecard_score_as_large_straight(PyObject *self, PyObject *arg
     return PyLong_FromLong(result);
 }
 
+static PyObject *Scorecard_score_as_chance(PyObject *self, PyObject *arg) {
+    int result = _roll_total(arg);
+    if(result < 0)
+        return NULL;
+    if(_apply_score(result, &SCORECARD(self)->chance) < 0)
+        return NULL;
+    return PyLong_FromLong(result);
+}
+
 static PyMethodDef scorecard_methods[] = {
     {"top_subtotal", Scorecard_top_subtotal, METH_NOARGS},
     {"top_total", Scorecard_top_total, METH_NOARGS},
@@ -304,6 +316,7 @@ static PyMethodDef scorecard_methods[] = {
     {"score_as_full_house", Scorecard_score_as_full_house, METH_O},
     {"score_as_small_straight", Scorecard_score_as_small_straight, METH_O},
     {"score_as_large_straight", Scorecard_score_as_large_straight, METH_O},
+    {"score_as_chance", Scorecard_score_as_chance, METH_O},
     {0},
 };
 

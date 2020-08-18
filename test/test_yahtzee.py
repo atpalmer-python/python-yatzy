@@ -163,3 +163,13 @@ def test_Scorecard_large_straight():
     scorecard = yahtzee.Scorecard()
     assert scorecard.score_as_large_straight(yahtzee.Roll(2,4,3,5,6)) == 40
 
+
+def test_Scorecard_chance1():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_chance(yahtzee.Roll(2,2,2,2,2)) == 10
+
+
+def test_Scorecard_chance2():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_chance(yahtzee.Roll(1,2,3,4,5)) == 15
+
