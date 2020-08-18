@@ -160,20 +160,25 @@ static PyObject *Scorecard_score_as_sixes(PyObject *self, PyObject *arg) {
     return PyLong_FromLong(result);
 }
 
-static void _roll_counts(PyObject *roll, int counts[6]) {
+typedef int _Counts[6];
+
+#define COUNTS_INIT                 {0}
+#define COUNTS_FOR_DIE(self, die)   ((self)[(die) - 1])
+
+static void _roll_counts(PyObject *roll, _Counts counts) {
     for(int i = 0; i < ROLL_NUM_DIE; ++i) {
         int value = ROLL_DIE_VALUE(roll, i);
         /* TODO: validate range */
-        ++counts[value - 1];
+        ++COUNTS_FOR_DIE(counts, value);
     }
 }
 
-static int _counts_of_a_kind(int counts[6], int kind) {
+static int _counts_of_a_kind(_Counts counts, int kind) {
     int ok_flag = 0;
     int total = 0;
-    for(int i = 0; i < 6; ++i) {
-        total += (i + 1) * counts[i];
-        if(counts[i] == kind)
+    for(int die = 1; die <= 6; ++die) {
+        total += die * COUNTS_FOR_DIE(counts, die);
+        if(COUNTS_FOR_DIE(counts, die) == kind)
             ok_flag = 1;
     }
     return ok_flag ? total : 0;
@@ -182,7 +187,7 @@ static int _counts_of_a_kind(int counts[6], int kind) {
 static PyObject *Scorecard_score_as_three_of_a_kind(PyObject *self, PyObject *arg) {
     if(!_ensure_Roll(arg))
         return -1;
-    int counts[6] = {0};
+    _Counts counts = COUNTS_INIT;
     _roll_counts(arg, counts);
     int result = _counts_of_a_kind(counts, 3);
     if(_apply_score(result, &SCORECARD(self)->three_of_a_kind) < 0)
@@ -193,7 +198,7 @@ static PyObject *Scorecard_score_as_three_of_a_kind(PyObject *self, PyObject *ar
 static PyObject *Scorecard_score_as_four_of_a_kind(PyObject *self, PyObject *arg) {
     if(!_ensure_Roll(arg))
         return -1;
-    int counts[6] = {0};
+    _Counts counts = COUNTS_INIT;
     _roll_counts(arg, counts);
     int result = _counts_of_a_kind(counts, 4);
     if(_apply_score(result, &SCORECARD(self)->four_of_a_kind) < 0)
