@@ -124,7 +124,8 @@ static PyObject *Scorecard_score_as_twos(PyObject *self, PyObject *arg) {
     int result = _score_top(arg, 2);
     if(result < 0)
         return NULL;
-    SCORECARD(self)->twos = result;
+    if(_apply_score(result, &SCORECARD(self)->twos) < 0)
+        return NULL;
     return PyLong_FromLong(result);
 }
 
@@ -132,7 +133,8 @@ static PyObject *Scorecard_score_as_threes(PyObject *self, PyObject *arg) {
     int result = _score_top(arg, 3);
     if(result < 0)
         return NULL;
-    SCORECARD(self)->threes = result;
+    if(_apply_score(result, &SCORECARD(self)->threes) < 0)
+        return NULL;
     return PyLong_FromLong(result);
 }
 
@@ -140,7 +142,8 @@ static PyObject *Scorecard_score_as_fours(PyObject *self, PyObject *arg) {
     int result = _score_top(arg, 4);
     if(result < 0)
         return NULL;
-    SCORECARD(self)->fours = result;
+    if(_apply_score(result, &SCORECARD(self)->fours) < 0)
+        return NULL;
     return PyLong_FromLong(result);
 }
 
@@ -148,7 +151,8 @@ static PyObject *Scorecard_score_as_fives(PyObject *self, PyObject *arg) {
     int result = _score_top(arg, 5);
     if(result < 0)
         return NULL;
-    SCORECARD(self)->fives = result;
+    if(_apply_score(result, &SCORECARD(self)->fives) < 0)
+        return NULL;
     return PyLong_FromLong(result);
 }
 
@@ -156,7 +160,8 @@ static PyObject *Scorecard_score_as_sixes(PyObject *self, PyObject *arg) {
     int result = _score_top(arg, 6);
     if(result < 0)
         return NULL;
-    SCORECARD(self)->sixes = result;
+    if(_apply_score(result, &SCORECARD(self)->sixes) < 0)
+        return NULL;
     return PyLong_FromLong(result);
 }
 
