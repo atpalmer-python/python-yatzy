@@ -168,6 +168,17 @@ static PyObject *Scorecard_score_as_sixes(PyObject *self, PyObject *arg) {
     return PyLong_FromLong(result);
 }
 
+static int _roll_total(PyObject *roll) {
+    if(!_ensure_Roll(roll))
+        return -1;
+    int result = 0;
+    for(int i = 0; i < ROLL_NUM_DIE; ++i) {
+        int value = ROLL_DIE_VALUE(roll, i);
+        result += value;
+    }
+    return result;
+}
+
 typedef int _Counts[6];
 
 #define COUNTS_INIT                 {0}
@@ -189,30 +200,27 @@ err:
     return NULL;
 }
 
-static int _has_kind(_Counts counts, int kind) {
+#define KIND_EXACT      (0)
+#define KIND_AT_LEAST   (5)
+
+static int _has_kind(_Counts counts, int kind, int max_diff) {
+    /*
+     * Exact match: max_diff = 0
+     * Greater or equal: max_diff = 5 (big enough to include all dice)
+     */
     for(int die = 1; die <= 6; ++die) {
-        if(COUNTS_FOR_DIE(counts, die) == kind)
+        int diff = COUNTS_FOR_DIE(counts, die) - kind;
+        if(diff >= 0 && diff <= max_diff)
             return 1;
     }
     return 0;
-}
-
-static int _counts_of_a_kind(_Counts counts, int kind) {
-    int ok_flag = 0;
-    int total = 0;
-    for(int die = 1; die <= 6; ++die) {
-        total += die * COUNTS_FOR_DIE(counts, die);
-        if(COUNTS_FOR_DIE(counts, die) == kind)
-            ok_flag = 1;
-    }
-    return ok_flag ? total : 0;
 }
 
 static PyObject *Scorecard_score_as_three_of_a_kind(PyObject *self, PyObject *arg) {
     _Counts counts = COUNTS_INIT;
     if(!_roll_counts(arg, counts))
         return NULL;
-    int result = _counts_of_a_kind(counts, 3);
+    int result = _has_kind(counts, 3, KIND_AT_LEAST) ? _roll_total(arg) : 0;
     if(_apply_score(result, &SCORECARD(self)->three_of_a_kind) < 0)
         return NULL;
     return PyLong_FromLong(result);
@@ -222,7 +230,7 @@ static PyObject *Scorecard_score_as_four_of_a_kind(PyObject *self, PyObject *arg
     _Counts counts = COUNTS_INIT;
     if(!_roll_counts(arg, counts))
         return NULL;
-    int result = _counts_of_a_kind(counts, 4);
+    int result = _has_kind(counts, 4, KIND_AT_LEAST) ? _roll_total(arg) : 0;
     if(_apply_score(result, &SCORECARD(self)->four_of_a_kind) < 0)
         return NULL;
     return PyLong_FromLong(result);
@@ -233,7 +241,7 @@ static PyObject *Scorecard_score_as_full_house(PyObject *self, PyObject *arg) {
     if(!_roll_counts(arg, counts))
         return NULL;
 
-    int result = (_has_kind(counts, 3) && _has_kind(counts, 2)) ? 25 : 0;
+    int result = (_has_kind(counts, 3, KIND_EXACT) && _has_kind(counts, 2, KIND_EXACT)) ? 25 : 0;
 
     if(_apply_score(result, &SCORECARD(self)->full_house) < 0)
         return NULL;

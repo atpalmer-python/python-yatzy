@@ -109,9 +109,14 @@ def test_Scorecard_total_with_bonus():
     assert scorecard.total() == 63 + 35
 
 
-def test_Scorecard_three_of_a_kind():
+def test_Scorecard_three_of_a_kind_exact():
     scorecard = yahtzee.Scorecard()
     assert scorecard.score_as_three_of_a_kind(yahtzee.Roll(6,6,6,2,5)) == 25
+
+
+def test_Scorecard_three_of_a_kind_at_least():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_three_of_a_kind(yahtzee.Roll(6,6,6,6,6)) == 30
 
 
 def test_Scorecard_three_of_a_kind_0():
@@ -119,9 +124,14 @@ def test_Scorecard_three_of_a_kind_0():
     assert scorecard.score_as_three_of_a_kind(yahtzee.Roll(6,6,1,2,3)) == 0
 
 
-def test_Scorecard_four_of_a_kind():
+def test_Scorecard_four_of_a_kind_exact():
     scorecard = yahtzee.Scorecard()
-    assert scorecard.score_as_four_of_a_kind(yahtzee.Roll(5,5,1,5,5)) == 21
+    assert scorecard.score_as_four_of_a_kind(yahtzee.Roll(5,5,5,5,1)) == 21
+
+
+def test_Scorecard_four_of_a_kind_at_least():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_four_of_a_kind(yahtzee.Roll(5,5,5,5,5)) == 25
 
 
 def test_Scorecard_four_of_a_kind_0():
