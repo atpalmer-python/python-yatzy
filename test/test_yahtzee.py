@@ -173,3 +173,17 @@ def test_Scorecard_chance2():
     scorecard = yahtzee.Scorecard()
     assert scorecard.score_as_chance(yahtzee.Roll(1,2,3,4,5)) == 15
 
+
+def test_Scorecard_yahtzee():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_yahtzee(yahtzee.Roll(5,5,5,5,5)) == 50
+    assert scorecard.score_as_yahtzee(yahtzee.Roll(3,3,3,3,3)) == 100
+    assert scorecard.score_as_yahtzee(yahtzee.Roll(4,4,4,4,4)) == 100
+
+
+def test_Scorecard_yahtzee_0():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_yahtzee(yahtzee.Roll(1,2,3,4,5)) == 0
+    with pytest.raises(RuntimeError):
+        assert scorecard.score_as_yahtzee(yahtzee.Roll(1,2,3,4,5)) == 0
+
