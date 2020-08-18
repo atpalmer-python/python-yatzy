@@ -1,5 +1,5 @@
-#ifndef YAHTZEE_ROLL
-#define YAHTZEE_ROLL
+#ifndef ROLL_H
+#define ROLL_H
 
 #define ROLL_NUM_DIE                (5)
 

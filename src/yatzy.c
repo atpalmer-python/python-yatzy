@@ -1,16 +1,16 @@
 #include <Python.h>
-#include "yahtzee_roll.h"
-#include "yahtzee_scorecard.h"
+#include "roll.h"
+#include "scorecard.h"
 
 static struct PyModuleDef module = {
     .m_base = PyModuleDef_HEAD_INIT,
-    .m_name = "yahtzee",
+    .m_name = "yatzy",
     .m_doc = "",
     .m_size = 0,
     .m_methods = NULL,
 };
 
-PyMODINIT_FUNC PyInit_yahtzee(void) {
+PyMODINIT_FUNC PyInit_yatzy(void) {
     if(PyType_Ready(&Roll_Type) < 0)
         return NULL;
     if(PyType_Ready(&Scorecard_Type) < 0)

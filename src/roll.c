@@ -1,5 +1,5 @@
 #include <Python.h>
-#include "yahtzee_roll.h"
+#include "roll.h"
 
 
 static PyObject *_ensure_arg_len(PyObject *tuple) {

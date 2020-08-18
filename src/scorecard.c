@@ -1,5 +1,5 @@
 #include <Python.h>
-#include "yahtzee_roll.h"
+#include "roll.h"
 
 #define TOP_BONUS(top)      ((top) >= 63 ? 35 : 0)
 #define SLOT_IS_FREE(slot)  ((slot) < 0)
@@ -19,15 +19,15 @@ typedef struct {
     int small_straight;
     int large_straight;
     int chance;
-    int yahtzee;  /* Yahtzees are different. Store count (not score) */
+    int yatzy;  /* Yatzys are different. Store count (not score) */
 } Scorecard;
 
 #define SCORECARD(self)                 ((Scorecard *)self)
 #define SCORECARD_FIELD(self, f)        (SCORECARD(self)->f)
 #define SCORECARD_HAS_VAL(self, f)      (!SLOT_IS_FREE(SCORECARD_FIELD(self, f)))
 #define SCORECARD_VAL(self, f)          (SCORECARD_HAS_VAL(self, f) ? SCORECARD_FIELD(self, f) : 0)
-#define YAHTZEE_TOTAL(self)   \
-    (SCORECARD_VAL(self, yahtzee) ? (50 + ((SCORECARD_VAL(self, yahtzee) - 1) * 100)) : 0)
+#define YATZY_TOTAL(self)   \
+    (SCORECARD_VAL(self, yatzy) ? (50 + ((SCORECARD_VAL(self, yatzy) - 1) * 100)) : 0)
 
 static PyObject *_ensure_Roll(PyObject *arg) {
     if(Roll_CheckExact(arg))
@@ -54,7 +54,7 @@ static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwar
     new->small_straight = -1;
     new->large_straight = -1;
     new->chance = -1;
-    new->yahtzee = -1;
+    new->yatzy = -1;
 
     return (PyObject *)new;
 }
@@ -84,7 +84,7 @@ static int _bottom_total(PyObject *self) {
         + SCORECARD_VAL(self, small_straight)
         + SCORECARD_VAL(self, large_straight)
         + SCORECARD_VAL(self, chance)
-        + YAHTZEE_TOTAL(self)
+        + YATZY_TOTAL(self)
         ;
     return result;
 }
@@ -303,26 +303,26 @@ static PyObject *Scorecard_score_as_chance(PyObject *self, PyObject *arg) {
     return PyLong_FromLong(result);
 }
 
-static PyObject *Scorecard_score_as_yahtzee(PyObject *self, PyObject *arg) {
+static PyObject *Scorecard_score_as_yatzy(PyObject *self, PyObject *arg) {
     _Counts counts = COUNTS_INIT;
     if(!_roll_counts(arg, counts))
         return NULL;
 
-    if(SCORECARD(self)->yahtzee == 0) {
-        /* Don't use SLOT_IS_FREE for Yahtzees. >0 OK. */
+    if(SCORECARD(self)->yatzy == 0) {
+        /* Don't use SLOT_IS_FREE for Yatzys. >0 OK. */
         PyErr_SetString(PyExc_RuntimeError, "Invalid choice. Slot is already in use");
         return NULL;
     }
 
     if(!_has_kind(counts, 5, KIND_EXACT)) {
-        SCORECARD(self)->yahtzee = 0;
+        SCORECARD(self)->yatzy = 0;
         return PyLong_FromLong(0);
     }
 
-    int orig = YAHTZEE_TOTAL(self);
-    int new_count = SCORECARD(self)->yahtzee < 0 ? 1 : SCORECARD(self)->yahtzee + 1;
-    SCORECARD(self)->yahtzee = new_count;
-    int result = YAHTZEE_TOTAL(self) - orig;
+    int orig = YATZY_TOTAL(self);
+    int new_count = SCORECARD(self)->yatzy < 0 ? 1 : SCORECARD(self)->yatzy + 1;
+    SCORECARD(self)->yatzy = new_count;
+    int result = YATZY_TOTAL(self) - orig;
 
     return PyLong_FromLong(result);
 }
@@ -344,7 +344,7 @@ static PyMethodDef scorecard_methods[] = {
     {"score_as_small_straight", Scorecard_score_as_small_straight, METH_O},
     {"score_as_large_straight", Scorecard_score_as_large_straight, METH_O},
     {"score_as_chance", Scorecard_score_as_chance, METH_O},
-    {"score_as_yahtzee", Scorecard_score_as_yahtzee, METH_O},
+    {"score_as_yatzy", Scorecard_score_as_yatzy, METH_O},
     {0},
 };
 

@@ -2,12 +2,12 @@ from setuptools import setup, Extension
 
 
 setup(
-    name='yahtzee',
+    name='yatzy',
     ext_modules=[
-        Extension('yahtzee', sources=[
-            'src/yahtzee.c',
-            'src/yahtzee_roll.c',
-            'src/yahtzee_scorecard.c',
+        Extension('yatzy', sources=[
+            'src/yatzy.c',
+            'src/roll.c',
+            'src/scorecard.c',
         ])
     ]
 )
