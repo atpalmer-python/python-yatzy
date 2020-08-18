@@ -148,3 +148,8 @@ def test_Scorecard_full_house_0():
     scorecard = yahtzee.Scorecard()
     assert scorecard.score_as_full_house(yahtzee.Roll(1,6,2,5,3)) == 0
 
+
+def test_Scorecard_small_straight():
+    scorecard = yahtzee.Scorecard()
+    assert scorecard.score_as_small_straight(yahtzee.Roll(2,4,3,6,1)) == 30
+
