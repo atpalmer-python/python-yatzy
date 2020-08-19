@@ -1,4 +1,5 @@
 #include <Python.h>
+#include "structmember.h"
 #include "roll.h"
 
 #define RANDOM_DIE_VALUE    ((rand() % 6) + 1)
@@ -126,6 +127,11 @@ static PyMethodDef Roll_methods[] = {
     {0},
 };
 
+static PyMemberDef Roll_members[] = {
+    {"rolls_left", T_INT, offsetof(Roll, rolls_left), READONLY},
+    {0}
+};
+
 PyTypeObject Roll_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "Roll",
@@ -135,6 +141,7 @@ PyTypeObject Roll_Type = {
     .tp_new = Roll_New,
     .tp_as_sequence = &Roll_as_sequence,
     .tp_methods = Roll_methods,
+    .tp_members = Roll_members,
     .tp_repr = Roll_Repr,
 };
 

@@ -39,12 +39,27 @@ def test_Roll_hold():
         assert roll2[i] >= 1 and roll2[i] <= 6
 
 
-def test_Roll_rolls_left():
+def test_Roll_rolls_left_error():
     roll = yatzy.Roll.roll()
     roll = roll.hold()
     roll = roll.hold()
     with pytest.raises(RuntimeError):
         roll = roll.hold()
+
+
+def test_Roll_rolls_left():
+    roll = yatzy.Roll.roll()
+    assert roll.rolls_left == 2
+    roll = roll.hold()
+    assert roll.rolls_left == 1
+    roll = roll.hold()
+    assert roll.rolls_left == 0
+
+
+def test_Roll_rolls_left_readonly():
+    roll = yatzy.Roll.roll()
+    with pytest.raises(AttributeError):
+        roll.rolls_left = 100
 
 
 def test_Roll_item_access_out_of_bounds():
