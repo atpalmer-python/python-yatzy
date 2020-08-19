@@ -66,6 +66,30 @@ static PyObject *Roll_roll(PyTypeObject *cls, PyObject *args) {
     return (PyObject *)new;
 }
 
+static PyObject *Roll_Repr(PyObject *self) {
+    static const size_t RESULT_LEN = 16;
+    char result[RESULT_LEN] = {0};
+    char *p = result;
+
+    *p++ = '[';
+    for(int i = 0; i < 5; ++i) {
+        if(i) {
+            *p++ = ',';
+            *p++ = ' ';
+        }
+        sprintf(p++, "%d", ROLL_DIE_VALUE(self, i));
+    }
+    *p++ = ']';
+    *p++ = '\0';
+
+    if(p - result != RESULT_LEN) {
+        PyErr_SetString(PyExc_SystemError, "Error creating repr: corrupted state");
+        return NULL;
+    }
+
+    return PyUnicode_FromString(result);
+}
+
 static PyMethodDef Roll_methods[] = {
     {"roll", (PyCFunction)Roll_roll, METH_CLASS | METH_NOARGS},
     {0},
@@ -80,5 +104,6 @@ PyTypeObject Roll_Type = {
     .tp_new = Roll_New,
     .tp_as_sequence = &Roll_as_sequence,
     .tp_methods = Roll_methods,
+    .tp_repr = Roll_Repr,
 };
 

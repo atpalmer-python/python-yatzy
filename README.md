@@ -25,7 +25,7 @@ Object for scoring rolls.
 
 ## TODO
 
-* Add `str`/`repr` methods.
+* Add `str`/`repr` methods to Scorecard.
 * Add `Scorecard` methods for accessing individual score slots.
 * Retrieve available scoring slots.
 * Fill out `Scorcard` API documentation.

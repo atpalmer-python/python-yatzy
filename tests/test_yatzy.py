@@ -12,6 +12,16 @@ def test_Roll_item_access():
     assert roll[4] == 5
 
 
+def test_Roll_repr():
+    roll = yatzy.Roll(1,2,3,4,5)
+    assert repr(roll) == '[1, 2, 3, 4, 5]'
+
+
+def test_Roll_str():
+    roll = yatzy.Roll(5,4,3,2,1)
+    assert str(roll) == '[5, 4, 3, 2, 1]'
+
+
 def test_Roll_random_creation():
     roll = yatzy.Roll.roll()
     for i in range(0, 5):
