@@ -17,6 +17,10 @@ Initialize `Roll` with five specific die values. Must include all five dice. Arg
 
 Create a `Roll` object with random die values.
 
+#### hold(die...)
+
+Re-roll with indicated die held from previous roll. Returns new `Roll`. Does not mutate previous `Roll` object.
+
 
 ### Scorecard
 
