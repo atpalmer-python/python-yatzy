@@ -1,6 +1,7 @@
 #include <Python.h>
 #include "roll.h"
 
+#define RANDOM_DIE_VALUE    ((rand() % 6) + 1)
 
 static PyObject *_ensure_arg_len(PyObject *tuple) {
     if(PyTuple_Size(tuple) == ROLL_NUM_DIE)
@@ -11,7 +12,7 @@ static PyObject *_ensure_arg_len(PyObject *tuple) {
 
 static Py_ssize_t _ensure_valid_index(Py_ssize_t i) {
     if(!ROLL_INDEX_IS_VALID(i)) {
-        PyErr_SetString(PyExc_IndexError, "Index is out of range.");
+        PyErr_Format(PyExc_IndexError, "Index is out of range: %d", i);
         return -1;
     }
     return i;
@@ -61,7 +62,33 @@ static PySequenceMethods Roll_as_sequence = {
 static PyObject *Roll_roll(PyTypeObject *cls, PyObject *args) {
     Roll *new = (Roll *)cls->tp_alloc(cls, 0);
     for(int i = 0; i < 5; ++i) {
-        new->dice[i] = (rand() % 6) + 1;
+        new->dice[i] = RANDOM_DIE_VALUE;
+    }
+    return (PyObject *)new;
+}
+
+static PyObject *Roll_hold(PyObject *self, PyObject *argv[], Py_ssize_t argc) {
+    if(argc == 0) {
+        Py_INCREF(self);
+        return self;
+    }
+
+    int hold[5] = {0};  /* boolean T/F. Set index to 1 if holding */
+    for(int i = 0; i < argc; ++i) {
+        int val = PyLong_AsLong(argv[i]);
+        if(PyErr_Occurred())
+            return NULL;
+        if(_ensure_valid_index(val) < 0)
+            return NULL;
+        /* No need to validate whether `val` is already held.
+         * Just allow duplicates in argv */
+        hold[val] = 1;
+    }
+
+    PyTypeObject *cls = Py_TYPE(self);
+    Roll *new = (Roll *)cls->tp_alloc(cls, 0);
+    for(int i = 0; i < 5; ++i) {
+        new->dice[i] = hold[i] ? ROLL_DIE_VALUE(self, i) : RANDOM_DIE_VALUE;
     }
     return (PyObject *)new;
 }
@@ -92,6 +119,7 @@ static PyObject *Roll_Repr(PyObject *self) {
 
 static PyMethodDef Roll_methods[] = {
     {"roll", (PyCFunction)Roll_roll, METH_CLASS | METH_NOARGS},
+    {"hold", (PyCFunction)Roll_hold, METH_FASTCALL},
     {0},
 };
 

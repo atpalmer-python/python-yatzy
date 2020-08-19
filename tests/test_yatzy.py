@@ -28,6 +28,17 @@ def test_Roll_random_creation():
         assert roll[i] >= 1 and roll[i] <= 6
 
 
+def test_Roll_hold():
+    roll1 = yatzy.Roll.roll()
+    roll2 = roll1.hold(2, 4)
+    assert roll1[2] == roll2[2]
+    assert roll1[4] == roll2[4]
+    for i in range(0, 5):
+        # indexes not held are randomly assigned by `hold`
+        # just confirm all die are still in range
+        assert roll2[i] >= 1 and roll2[i] <= 6
+
+
 def test_Roll_item_access_out_of_bounds():
     roll = yatzy.Roll.roll()
     with pytest.raises(IndexError):
