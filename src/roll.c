@@ -37,6 +37,7 @@ static PyObject *Roll_New(PyTypeObject *tp, PyObject *args, PyObject *kwargs) {
         return NULL;
 
     Roll *new = (Roll *)tp->tp_alloc(tp, 0);
+    new->rolls_left = 2;
     for(int i = 0; i < ROLL_NUM_DIE; ++i) {
         new->dice[i] = _tuple_item_as_die_value(args, i);
         if(PyErr_Occurred())
@@ -61,6 +62,7 @@ static PySequenceMethods Roll_as_sequence = {
 
 static PyObject *Roll_roll(PyTypeObject *cls, PyObject *args) {
     Roll *new = (Roll *)cls->tp_alloc(cls, 0);
+    new->rolls_left = 2;
     for(int i = 0; i < 5; ++i) {
         new->dice[i] = RANDOM_DIE_VALUE;
     }
@@ -68,9 +70,9 @@ static PyObject *Roll_roll(PyTypeObject *cls, PyObject *args) {
 }
 
 static PyObject *Roll_hold(PyObject *self, PyObject *argv[], Py_ssize_t argc) {
-    if(argc == 0) {
-        Py_INCREF(self);
-        return self;
+    if(ROLL_ROLLS_LEFT(self) == 0) {
+        PyErr_SetString(PyExc_RuntimeError, "No rolls left");
+        return NULL;
     }
 
     int hold[5] = {0};  /* boolean T/F. Set index to 1 if holding */
@@ -87,6 +89,7 @@ static PyObject *Roll_hold(PyObject *self, PyObject *argv[], Py_ssize_t argc) {
 
     PyTypeObject *cls = Py_TYPE(self);
     Roll *new = (Roll *)cls->tp_alloc(cls, 0);
+    new->rolls_left = ROLL_ROLLS_LEFT(self) - 1;
     for(int i = 0; i < 5; ++i) {
         new->dice[i] = hold[i] ? ROLL_DIE_VALUE(self, i) : RANDOM_DIE_VALUE;
     }
