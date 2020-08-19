@@ -1,6 +1,8 @@
 #ifndef ROLL_H
 #define ROLL_H
 
+#include <Python.h>
+
 #define ROLL_NUM_DIE                (5)
 
 typedef struct {
