@@ -232,6 +232,17 @@ def test_Scorecard_yatzy_0():
         assert scorecard.score_as_yatzy(yatzy.Roll(1,2,3,4,5)) == 0
 
 
+def test_Scorecard_lower_total():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.score_as_three_of_a_kind(yatzy.Roll(1,1,1,1,1)) == 5
+    assert scorecard.score_as_four_of_a_kind(yatzy.Roll(2,2,2,2,2)) == 10
+    assert scorecard.score_as_full_house(yatzy.Roll(3,3,3,4,4)) == 25
+    assert scorecard.score_as_small_straight(yatzy.Roll(6,5,4,3,2)) == 30
+    assert scorecard.score_as_large_straight(yatzy.Roll(6,5,4,3,2)) == 40
+    assert scorecard.score_as_yatzy(yatzy.Roll(1,1,1,1,1)) == 50
+    assert scorecard.lower_total() == 160
+
+
 def test_Scorecard_repr():
     scorecard = yatzy.Scorecard()
     scorecard.score_as_ones(yatzy.Roll(1,1,1,2,3))
