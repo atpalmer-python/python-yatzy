@@ -23,8 +23,7 @@ typedef struct {
 } Scorecard;
 
 #define SCORECARD(self)                 ((Scorecard *)self)
-#define SCORECARD_HAS_VAL(self, f)      (!SLOT_IS_FREE(SCORECARD(self)->f))
-#define SCORECARD_VAL(self, f)          (SCORECARD_HAS_VAL(self, f) ? SCORECARD(self)->f : 0)
+#define SCORECARD_VAL(self, f)          ((SCORECARD(self)->f < 0) ? 0 : SCORECARD(self)->f)
 #define YATZY_TOTAL(self)   \
     (SCORECARD_VAL(self, yatzy) ? (50 + ((SCORECARD_VAL(self, yatzy) - 1) * 100)) : 0)
 
