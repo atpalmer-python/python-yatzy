@@ -263,8 +263,8 @@ def test_Scorecard_repr():
     scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
     scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
     scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
-    assert repr(scorecard) == '<Upper=98, Lower=710, Total=808>'
-    assert str(scorecard) == '<Upper=98, Lower=710, Total=808>'
+    assert repr(scorecard) == '<Scorecard: upper_total=98, lower_total=710, total=808>'
+    assert str(scorecard) == '<Scorecard: upper_total=98, lower_total=710, total=808>'
 
 
 def test_Scorecard_get_ones():

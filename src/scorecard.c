@@ -329,7 +329,7 @@ static PyObject *Scorecard_Repr(PyObject *self) {
 
     int upper = _upper_total(self);
     int lower = _lower_total(self);
-    sprintf(result, "<Upper=%d, Lower=%d, Total=%d>",
+    sprintf(result, "<Scorecard: upper_total=%d, lower_total=%d, total=%d>",
         upper, lower,  upper + lower);
 
     return PyUnicode_FromString(result);
