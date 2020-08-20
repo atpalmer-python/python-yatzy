@@ -262,3 +262,39 @@ def test_Scorecard_get_ones():
     scorecard.score_as_ones(yatzy.Roll(1,1,1,1,6))
     assert scorecard.ones == 4
 
+
+def test_Scorecard_get_twos():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.twos == None
+    scorecard.score_as_twos(yatzy.Roll(3,2,2,2,5))
+    assert scorecard.twos == 6
+
+
+def test_Scorecard_get_threes():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.threes == None
+    scorecard.score_as_threes(yatzy.Roll(6,3,3,3,4))
+    assert scorecard.threes == 9
+
+
+def test_Scorecard_get_fours():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.fours == None
+    scorecard.score_as_fours(yatzy.Roll(1,2,3,5,6))
+    assert scorecard.fours == 0
+
+
+def test_Scorecard_get_fives():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.fives == None
+    scorecard.score_as_fives(yatzy.Roll(6,1,5,2,4))
+    assert scorecard.fives == 5
+
+
+def test_Scorecard_get_sixes():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.sixes == None
+    scorecard.score_as_sixes(yatzy.Roll(6,6,6,6,6))
+    assert scorecard.sixes == 30
+
+

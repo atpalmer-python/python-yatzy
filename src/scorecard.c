@@ -365,8 +365,43 @@ static PyObject *Scorecard_ones(PyObject *self, void *_) {
     return PyLong_FromLong(SCORECARD(self)->ones);
 }
 
+static PyObject *Scorecard_twos(PyObject *self, void *_) {
+    if(SCORECARD(self)->twos < 0)
+        Py_RETURN_NONE;
+    return PyLong_FromLong(SCORECARD(self)->twos);
+}
+
+static PyObject *Scorecard_threes(PyObject *self, void *_) {
+    if(SCORECARD(self)->threes < 0)
+        Py_RETURN_NONE;
+    return PyLong_FromLong(SCORECARD(self)->threes);
+}
+
+static PyObject *Scorecard_fours(PyObject *self, void *_) {
+    if(SCORECARD(self)->fours < 0)
+        Py_RETURN_NONE;
+    return PyLong_FromLong(SCORECARD(self)->fours);
+}
+
+static PyObject *Scorecard_fives(PyObject *self, void *_) {
+    if(SCORECARD(self)->fives < 0)
+        Py_RETURN_NONE;
+    return PyLong_FromLong(SCORECARD(self)->fives);
+}
+
+static PyObject *Scorecard_sixes(PyObject *self, void *_) {
+    if(SCORECARD(self)->sixes < 0)
+        Py_RETURN_NONE;
+    return PyLong_FromLong(SCORECARD(self)->sixes);
+}
+
 static PyGetSetDef scorecard_getset[] = {
     {"ones", Scorecard_ones, NULL},
+    {"twos", Scorecard_twos, NULL},
+    {"threes", Scorecard_threes, NULL},
+    {"fours", Scorecard_fours, NULL},
+    {"fives", Scorecard_fives, NULL},
+    {"sixes", Scorecard_sixes, NULL},
     {0},
 };
 
