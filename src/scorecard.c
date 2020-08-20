@@ -395,6 +395,18 @@ static PyObject *Scorecard_sixes(PyObject *self, void *_) {
     return PyLong_FromLong(SCORECARD(self)->sixes);
 }
 
+static PyObject *Scorecard_three_of_a_kind(PyObject *self, void *_) {
+    if(SCORECARD(self)->three_of_a_kind < 0)
+        Py_RETURN_NONE;
+    return PyLong_FromLong(SCORECARD(self)->three_of_a_kind);
+}
+
+static PyObject *Scorecard_four_of_a_kind(PyObject *self, void *_) {
+    if(SCORECARD(self)->four_of_a_kind < 0)
+        Py_RETURN_NONE;
+    return PyLong_FromLong(SCORECARD(self)->four_of_a_kind);
+}
+
 static PyGetSetDef scorecard_getset[] = {
     {"ones", Scorecard_ones, NULL},
     {"twos", Scorecard_twos, NULL},
@@ -402,6 +414,15 @@ static PyGetSetDef scorecard_getset[] = {
     {"fours", Scorecard_fours, NULL},
     {"fives", Scorecard_fives, NULL},
     {"sixes", Scorecard_sixes, NULL},
+
+    {"three_of_a_kind", Scorecard_three_of_a_kind, NULL},
+    {"four_of_a_kind", Scorecard_four_of_a_kind, NULL},
+    //{"full_house", Scorecard_full_house, NULL},
+    //{"small_straight", Scorecard_small_straight, NULL},
+    //{"large_straight", Scorecard_large_straight, NULL},
+    //{"chance", Scorecard_chance, NULL},
+
+    //{"yatzy", Scorecard_yatzy, NULL},
     {0},
 };
 
