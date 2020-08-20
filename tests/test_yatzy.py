@@ -231,3 +231,27 @@ def test_Scorecard_yatzy_0():
     with pytest.raises(RuntimeError):
         assert scorecard.score_as_yatzy(yatzy.Roll(1,2,3,4,5)) == 0
 
+
+def test_Scorecard_repr():
+    scorecard = yatzy.Scorecard()
+    scorecard.score_as_ones(yatzy.Roll(1,1,1,2,3))
+    scorecard.score_as_twos(yatzy.Roll(2,2,2,3,4))
+    scorecard.score_as_threes(yatzy.Roll(3,3,3,4,5))
+    scorecard.score_as_fours(yatzy.Roll(4,4,4,5,6))
+    scorecard.score_as_fives(yatzy.Roll(5,5,5,6,1))
+    scorecard.score_as_sixes(yatzy.Roll(6,6,6,1,2))
+    scorecard.score_as_three_of_a_kind(yatzy.Roll(6,6,6,6,6))
+    scorecard.score_as_four_of_a_kind(yatzy.Roll(6,6,6,6,6))
+    scorecard.score_as_full_house(yatzy.Roll(6,6,6,6,6))
+    scorecard.score_as_small_straight(yatzy.Roll(1,2,3,4,5))
+    scorecard.score_as_large_straight(yatzy.Roll(1,2,3,4,5))
+    scorecard.score_as_chance(yatzy.Roll(6,6,6,6,6))
+    scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
+    scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
+    scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
+    scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
+    scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
+    scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
+    assert repr(scorecard) == '<Upper=98, Lower=710, Total=808>'
+    assert str(scorecard) == '<Upper=98, Lower=710, Total=808>'
+

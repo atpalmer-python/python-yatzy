@@ -327,6 +327,17 @@ static PyObject *Scorecard_score_as_yatzy(PyObject *self, PyObject *arg) {
     return PyLong_FromLong(result);
 }
 
+static PyObject *Scorecard_Repr(PyObject *self) {
+    char result[64] = {0};
+
+    int top = _top_total(self);
+    int bottom = _bottom_total(self);
+    sprintf(result, "<Upper=%d, Lower=%d, Total=%d>",
+        top, bottom,  top + bottom);
+
+    return PyUnicode_FromString(result);
+}
+
 static PyMethodDef scorecard_methods[] = {
     {"top_subtotal", Scorecard_top_subtotal, METH_NOARGS},
     {"top_total", Scorecard_top_total, METH_NOARGS},
@@ -355,6 +366,7 @@ PyTypeObject Scorecard_Type = {
     .tp_basicsize = sizeof(Scorecard),
     .tp_flags = Py_TPFLAGS_DEFAULT,
     .tp_new = Scorecard_New,
+    .tp_repr = Scorecard_Repr,
     .tp_methods = scorecard_methods,
 };
 
