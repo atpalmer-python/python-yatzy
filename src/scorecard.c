@@ -359,6 +359,17 @@ static PyMethodDef scorecard_methods[] = {
     {0},
 };
 
+static PyObject *Scorecard_ones(PyObject *self, void *_) {
+    if(SCORECARD(self)->ones < 0)
+        Py_RETURN_NONE;
+    return PyLong_FromLong(SCORECARD(self)->ones);
+}
+
+static PyGetSetDef scorecard_getset[] = {
+    {"ones", Scorecard_ones, NULL},
+    {0},
+};
+
 PyTypeObject Scorecard_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
     .tp_name = "Scorecard",
@@ -368,5 +379,6 @@ PyTypeObject Scorecard_Type = {
     .tp_new = Scorecard_New,
     .tp_repr = Scorecard_Repr,
     .tp_methods = scorecard_methods,
+    .tp_getset = scorecard_getset,
 };
 

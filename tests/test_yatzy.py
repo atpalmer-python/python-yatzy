@@ -255,3 +255,10 @@ def test_Scorecard_repr():
     assert repr(scorecard) == '<Upper=98, Lower=710, Total=808>'
     assert str(scorecard) == '<Upper=98, Lower=710, Total=808>'
 
+
+def test_Scorecard_get_ones():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.ones == None
+    scorecard.score_as_ones(yatzy.Roll(1,1,1,1,6))
+    assert scorecard.ones == 4
+
