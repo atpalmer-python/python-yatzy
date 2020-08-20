@@ -74,7 +74,7 @@ static int _upper_total(PyObject *self) {
     return total;
 }
 
-static int _bottom_total(PyObject *self) {
+static int _lower_total(PyObject *self) {
     int result = SCORECARD_VAL(self, three_of_a_kind)
         + SCORECARD_VAL(self, four_of_a_kind)
         + SCORECARD_VAL(self, full_house)
@@ -96,13 +96,13 @@ static PyObject *Scorecard_upper_total(PyObject *self, PyObject *unused) {
     return PyLong_FromLong(total);
 }
 
-static PyObject *Scorecard_bottom_total(PyObject *self, PyObject *unused) {
-    int total = _bottom_total(self);
+static PyObject *Scorecard_lower_total(PyObject *self, PyObject *unused) {
+    int total = _lower_total(self);
     return PyLong_FromLong(total);
 }
 
 static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
-    int total = _upper_total(self) + _bottom_total(self);
+    int total = _upper_total(self) + _lower_total(self);
     return PyLong_FromLong(total);
 }
 
@@ -328,9 +328,9 @@ static PyObject *Scorecard_Repr(PyObject *self) {
     char result[64] = {0};
 
     int upper = _upper_total(self);
-    int bottom = _bottom_total(self);
+    int lower = _lower_total(self);
     sprintf(result, "<Upper=%d, Lower=%d, Total=%d>",
-        upper, bottom,  upper + bottom);
+        upper, lower,  upper + lower);
 
     return PyUnicode_FromString(result);
 }
@@ -338,7 +338,7 @@ static PyObject *Scorecard_Repr(PyObject *self) {
 static PyMethodDef scorecard_methods[] = {
     {"upper_subtotal", Scorecard_upper_subtotal, METH_NOARGS},
     {"upper_total", Scorecard_upper_total, METH_NOARGS},
-    {"bottom_total", Scorecard_bottom_total, METH_NOARGS},
+    {"lower_total", Scorecard_lower_total, METH_NOARGS},
     {"total", Scorecard_total, METH_NOARGS},
     {"score_as_ones", Scorecard_score_as_ones, METH_O},
     {"score_as_twos", Scorecard_score_as_twos, METH_O},
