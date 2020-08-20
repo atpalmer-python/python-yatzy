@@ -127,14 +127,14 @@ def _Scorecard_earned_bonus():
     return scorecard
 
 
-def test_Scorecard_top_total_with_bonus():
+def test_Scorecard_upper_total_with_bonus():
     scorecard = _Scorecard_earned_bonus()
-    assert scorecard.top_total() == 63 + 35
+    assert scorecard.upper_total() == 63 + 35
 
 
-def test_Scorecard_top_subtotal_earned_bonus():
+def test_Scorecard_upper_subtotal_earned_bonus():
     scorecard = _Scorecard_earned_bonus()
-    assert scorecard.top_subtotal() == 63
+    assert scorecard.upper_subtotal() == 63
 
 
 def test_Scorecard_total():

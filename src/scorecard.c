@@ -1,7 +1,7 @@
 #include <Python.h>
 #include "roll.h"
 
-#define TOP_BONUS(top)      ((top) >= 63 ? 35 : 0)
+#define UPPER_BONUS(score)      ((score) >= 63 ? 35 : 0)
 
 typedef struct {
     PyObject_HEAD
@@ -56,7 +56,7 @@ static PyObject *Scorecard_New(PyTypeObject *cls, PyObject *args, PyObject *kwar
     return (PyObject *)new;
 }
 
-static int _top_subtotal(PyObject *self) {
+static int _upper_subtotal(PyObject *self) {
     int result = SCORECARD_VAL(self, ones)
         + SCORECARD_VAL(self, twos)
         + SCORECARD_VAL(self, threes)
@@ -67,9 +67,9 @@ static int _top_subtotal(PyObject *self) {
     return result;
 }
 
-static int _top_total(PyObject *self) {
-    int subtotal = _top_subtotal(self);
-    int bonus = TOP_BONUS(subtotal);
+static int _upper_total(PyObject *self) {
+    int subtotal = _upper_subtotal(self);
+    int bonus = UPPER_BONUS(subtotal);
     int total = subtotal + bonus;
     return total;
 }
@@ -86,13 +86,13 @@ static int _bottom_total(PyObject *self) {
     return result;
 }
 
-static PyObject *Scorecard_top_subtotal(PyObject *self, PyObject *unused) {
-    int subtotal = _top_subtotal(self);
+static PyObject *Scorecard_upper_subtotal(PyObject *self, PyObject *unused) {
+    int subtotal = _upper_subtotal(self);
     return PyLong_FromLong(subtotal);
 }
 
-static PyObject *Scorecard_top_total(PyObject *self, PyObject *unused) {
-    int total = _top_total(self);
+static PyObject *Scorecard_upper_total(PyObject *self, PyObject *unused) {
+    int total = _upper_total(self);
     return PyLong_FromLong(total);
 }
 
@@ -102,11 +102,11 @@ static PyObject *Scorecard_bottom_total(PyObject *self, PyObject *unused) {
 }
 
 static PyObject *Scorecard_total(PyObject *self, PyObject *unused) {
-    int total = _top_total(self) + _bottom_total(self);
+    int total = _upper_total(self) + _bottom_total(self);
     return PyLong_FromLong(total);
 }
 
-static int _score_top(PyObject *roll, uint8_t die_val) {
+static int _score_upper(PyObject *roll, uint8_t die_val) {
     if(!_ensure_Roll(roll))
         return -1;
     int result = 0;
@@ -126,7 +126,7 @@ static int _apply_score(int score, int *slot) {
 }
 
 static PyObject *Scorecard_score_as_ones(PyObject *self, PyObject *arg) {
-    int result = _score_top(arg, 1);
+    int result = _score_upper(arg, 1);
     if(result < 0)
         return NULL;
     if(_apply_score(result, &SCORECARD(self)->ones) < 0)
@@ -135,7 +135,7 @@ static PyObject *Scorecard_score_as_ones(PyObject *self, PyObject *arg) {
 }
 
 static PyObject *Scorecard_score_as_twos(PyObject *self, PyObject *arg) {
-    int result = _score_top(arg, 2);
+    int result = _score_upper(arg, 2);
     if(result < 0)
         return NULL;
     if(_apply_score(result, &SCORECARD(self)->twos) < 0)
@@ -144,7 +144,7 @@ static PyObject *Scorecard_score_as_twos(PyObject *self, PyObject *arg) {
 }
 
 static PyObject *Scorecard_score_as_threes(PyObject *self, PyObject *arg) {
-    int result = _score_top(arg, 3);
+    int result = _score_upper(arg, 3);
     if(result < 0)
         return NULL;
     if(_apply_score(result, &SCORECARD(self)->threes) < 0)
@@ -153,7 +153,7 @@ static PyObject *Scorecard_score_as_threes(PyObject *self, PyObject *arg) {
 }
 
 static PyObject *Scorecard_score_as_fours(PyObject *self, PyObject *arg) {
-    int result = _score_top(arg, 4);
+    int result = _score_upper(arg, 4);
     if(result < 0)
         return NULL;
     if(_apply_score(result, &SCORECARD(self)->fours) < 0)
@@ -162,7 +162,7 @@ static PyObject *Scorecard_score_as_fours(PyObject *self, PyObject *arg) {
 }
 
 static PyObject *Scorecard_score_as_fives(PyObject *self, PyObject *arg) {
-    int result = _score_top(arg, 5);
+    int result = _score_upper(arg, 5);
     if(result < 0)
         return NULL;
     if(_apply_score(result, &SCORECARD(self)->fives) < 0)
@@ -171,7 +171,7 @@ static PyObject *Scorecard_score_as_fives(PyObject *self, PyObject *arg) {
 }
 
 static PyObject *Scorecard_score_as_sixes(PyObject *self, PyObject *arg) {
-    int result = _score_top(arg, 6);
+    int result = _score_upper(arg, 6);
     if(result < 0)
         return NULL;
     if(_apply_score(result, &SCORECARD(self)->sixes) < 0)
@@ -327,17 +327,17 @@ static PyObject *Scorecard_score_as_yatzy(PyObject *self, PyObject *arg) {
 static PyObject *Scorecard_Repr(PyObject *self) {
     char result[64] = {0};
 
-    int top = _top_total(self);
+    int upper = _upper_total(self);
     int bottom = _bottom_total(self);
     sprintf(result, "<Upper=%d, Lower=%d, Total=%d>",
-        top, bottom,  top + bottom);
+        upper, bottom,  upper + bottom);
 
     return PyUnicode_FromString(result);
 }
 
 static PyMethodDef scorecard_methods[] = {
-    {"top_subtotal", Scorecard_top_subtotal, METH_NOARGS},
-    {"top_total", Scorecard_top_total, METH_NOARGS},
+    {"upper_subtotal", Scorecard_upper_subtotal, METH_NOARGS},
+    {"upper_total", Scorecard_upper_total, METH_NOARGS},
     {"bottom_total", Scorecard_bottom_total, METH_NOARGS},
     {"total", Scorecard_total, METH_NOARGS},
     {"score_as_ones", Scorecard_score_as_ones, METH_O},
