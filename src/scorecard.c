@@ -2,7 +2,6 @@
 #include "roll.h"
 
 #define TOP_BONUS(top)      ((top) >= 63 ? 35 : 0)
-#define SLOT_IS_FREE(slot)  ((slot) < 0)
 
 typedef struct {
     PyObject_HEAD
@@ -120,7 +119,7 @@ static int _score_top(PyObject *roll, uint8_t die_val) {
 }
 
 static int _apply_score(int score, int *slot) {
-    if(SLOT_IS_FREE(*slot))
+    if(*slot < 0)  /* slot available */
         return *slot = score;
     PyErr_SetString(PyExc_RuntimeError, "Invalid choice. Slot is already in use");
     return -1;
@@ -307,7 +306,7 @@ static PyObject *Scorecard_score_as_yatzy(PyObject *self, PyObject *arg) {
         return NULL;
 
     if(SCORECARD(self)->yatzy == 0) {
-        /* Don't use SLOT_IS_FREE for Yatzys. >0 OK. */
+        /* -1 means slot available. >0 is OK only for Yatzy. */
         PyErr_SetString(PyExc_RuntimeError, "Invalid choice. Slot is already in use");
         return NULL;
     }
