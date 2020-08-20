@@ -425,6 +425,12 @@ static PyObject *Scorecard_large_straight(PyObject *self, void *_) {
     return PyLong_FromLong(SCORECARD(self)->large_straight);
 }
 
+static PyObject *Scorecard_chance(PyObject *self, void *_) {
+    if(SCORECARD(self)->chance < 0)
+        Py_RETURN_NONE;
+    return PyLong_FromLong(SCORECARD(self)->chance);
+}
+
 static PyGetSetDef scorecard_getset[] = {
     {"ones", Scorecard_ones, NULL},
     {"twos", Scorecard_twos, NULL},
@@ -438,7 +444,7 @@ static PyGetSetDef scorecard_getset[] = {
     {"full_house", Scorecard_full_house, NULL},
     {"small_straight", Scorecard_small_straight, NULL},
     {"large_straight", Scorecard_large_straight, NULL},
-    //{"chance", Scorecard_chance, NULL},
+    {"chance", Scorecard_chance, NULL},
 
     //{"yatzy", Scorecard_yatzy, NULL},
     {0},
