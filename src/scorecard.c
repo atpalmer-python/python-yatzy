@@ -405,7 +405,7 @@ static PyObject *Scorecard_four_of_a_kind(PyObject *self, void *_) {
 }
 
 static PyObject *Scorecard_full_house(PyObject *self, void *_) {
-    if(SCORECARD(self)->full_house< 0)
+    if(SCORECARD(self)->full_house < 0)
         Py_RETURN_NONE;
     return PyLong_FromLong(SCORECARD(self)->full_house);
 }
