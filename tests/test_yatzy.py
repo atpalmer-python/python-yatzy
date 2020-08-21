@@ -316,6 +316,13 @@ def test_Scorecard_get_three_of_a_kind():
     assert scorecard.three_of_a_kind == 21
 
 
+def test_Scorecard_get_four_of_a_kind():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.four_of_a_kind == None
+    scorecard.score_as_four_of_a_kind(yatzy.Roll(6,6,6,6,1))
+    assert scorecard.four_of_a_kind == 25
+
+
 # TODO: test lower section getters
 
 
