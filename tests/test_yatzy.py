@@ -344,7 +344,11 @@ def test_Scorecard_get_large_straight():
     assert scorecard.large_straight == 40
 
 
-# TODO: test lower section getters
+def test_Scorecard_get_chance():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.chance == None
+    scorecard.score_as_chance(yatzy.Roll(5,5,4,4,2))
+    assert scorecard.chance == 20
 
 
 def test_Scorecard_get_yatzy():
