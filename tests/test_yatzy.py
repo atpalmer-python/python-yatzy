@@ -309,3 +309,28 @@ def test_Scorecard_get_sixes():
     assert scorecard.sixes == 30
 
 
+# TODO: test lower section getters
+
+
+def test_Scorecard_get_yatzy():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.yatzy == None
+    assert scorecard.yatzy_bonus == None
+    scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
+    assert scorecard.yatzy == 50
+    assert scorecard.yatzy_bonus == None
+    scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6))
+    assert scorecard.yatzy == 50
+    assert scorecard.yatzy_bonus == 100
+
+
+def test_Scorecard_get_yatzy0():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.yatzy == None
+    assert scorecard.yatzy_bonus == None
+    scorecard.score_as_yatzy(yatzy.Roll(1,2,3,4,5))
+    assert scorecard.yatzy == 0
+    assert scorecard.yatzy_bonus == 0
+    with pytest.raises(RuntimeError):
+        scorecard.score_as_yatzy(yatzy.Roll(6,6,6,6,6)) == 50
+

@@ -428,6 +428,22 @@ static PyObject *Scorecard_chance(PyObject *self, void *_) {
     return PyLong_FromLong(SCORECARD(self)->chance);
 }
 
+static PyObject *Scorecard_yatzy(PyObject *self, void *_) {
+    if(SCORECARD(self)->yatzy < 0)
+        Py_RETURN_NONE;
+    return PyLong_FromLong(SCORECARD(self)->yatzy ? 50 : 0);
+}
+
+static PyObject *Scorecard_yatzy_bonus(PyObject *self, void *_) {
+    if(SCORECARD(self)->yatzy < 0)
+        Py_RETURN_NONE;
+    if(SCORECARD(self)->yatzy == 1)
+        Py_RETURN_NONE;
+    if(SCORECARD(self)->yatzy == 0)
+        return PyLong_FromLong(0);
+    return PyLong_FromLong((SCORECARD(self)->yatzy - 1) * 100);
+}
+
 static PyGetSetDef scorecard_getset[] = {
     {"ones", Scorecard_ones, NULL},
     {"twos", Scorecard_twos, NULL},
@@ -443,7 +459,8 @@ static PyGetSetDef scorecard_getset[] = {
     {"large_straight", Scorecard_large_straight, NULL},
     {"chance", Scorecard_chance, NULL},
 
-    //{"yatzy", Scorecard_yatzy, NULL},
+    {"yatzy", Scorecard_yatzy, NULL},
+    {"yatzy_bonus", Scorecard_yatzy_bonus, NULL},
     {0},
 };
 
