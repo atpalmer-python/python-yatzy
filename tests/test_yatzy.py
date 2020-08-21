@@ -323,6 +323,13 @@ def test_Scorecard_get_four_of_a_kind():
     assert scorecard.four_of_a_kind == 25
 
 
+def test_Scorecard_get_full_house():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.full_house == None
+    scorecard.score_as_full_house(yatzy.Roll(1,6,6,6,1))
+    assert scorecard.full_house == 25
+
+
 # TODO: test lower section getters
 
 
