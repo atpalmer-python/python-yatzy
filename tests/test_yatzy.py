@@ -330,6 +330,20 @@ def test_Scorecard_get_full_house():
     assert scorecard.full_house == 25
 
 
+def test_Scorecard_get_small_straight():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.small_straight == None
+    scorecard.score_as_small_straight(yatzy.Roll(4,2,6,1,3))
+    assert scorecard.small_straight == 30
+
+
+def test_Scorecard_get_large_straight():
+    scorecard = yatzy.Scorecard()
+    assert scorecard.large_straight == None
+    scorecard.score_as_large_straight(yatzy.Roll(4,3,2,5,1))
+    assert scorecard.large_straight == 40
+
+
 # TODO: test lower section getters
 
 
