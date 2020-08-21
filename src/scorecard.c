@@ -326,12 +326,10 @@ static PyObject *Scorecard_score_as_yatzy(PyObject *self, PyObject *arg) {
 
 static PyObject *Scorecard_Repr(PyObject *self) {
     char result[64] = {0};
-
     int upper = _upper_total(self);
     int lower = _lower_total(self);
     sprintf(result, "<Scorecard: upper_total=%d, lower_total=%d, total=%d>",
         upper, lower,  upper + lower);
-
     return PyUnicode_FromString(result);
 }
 
@@ -451,14 +449,12 @@ static PyGetSetDef scorecard_getset[] = {
     {"fours", Scorecard_fours, NULL},
     {"fives", Scorecard_fives, NULL},
     {"sixes", Scorecard_sixes, NULL},
-
     {"three_of_a_kind", Scorecard_three_of_a_kind, NULL},
     {"four_of_a_kind", Scorecard_four_of_a_kind, NULL},
     {"full_house", Scorecard_full_house, NULL},
     {"small_straight", Scorecard_small_straight, NULL},
     {"large_straight", Scorecard_large_straight, NULL},
     {"chance", Scorecard_chance, NULL},
-
     {"yatzy", Scorecard_yatzy, NULL},
     {"yatzy_bonus", Scorecard_yatzy_bonus, NULL},
     {0},
