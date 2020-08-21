@@ -29,9 +29,8 @@ Object for scoring rolls.
 
 ## TODO
 
-* Add `Scorecard` yatzy getter (separate getter for yatzy bonus?)
-* Implement `Scorecard` getter tests.
 * Retrieve available `Scorecard` scoring slots.
 * Fill out `Scorcard` API documentation.
 * Create objects for game state?
+* Implement sample console game.
 
